@@ -1,7 +1,7 @@
-name: Attach static preview to release
+name: Attach preview assets to release
 
-# uploads.github.com is unreachable from some sandboxes, so the archive is
-# published as a release asset from GitHub Actions instead.
+# uploads.github.com is unreachable from some sandboxes, so the archives are
+# published as release assets from GitHub Actions instead.
 on:
   push:
     tags: ['v*']
@@ -16,16 +16,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify archive
+      - name: Verify archives
         run: |
-          ls -lh preview/vikak-static-preview.zip
+          ls -lh preview/*.zip
           unzip -l preview/vikak-static-preview.zip | tail -2
+          unzip -l preview/vikak-screenshots.zip | tail -2
 
       - name: Create or update release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${GITHUB_REF_NAME:-v0.1.0-demo}"
+          if [[ "$TAG" != v* ]]; then TAG="v0.1.0-demo"; fi
           gh release view "$TAG" >/dev/null 2>&1 || \
-            gh release create "$TAG" --title "ویکک — پیش‌نمایش استاتیک" --notes "نسخه‌ی استاتیک کامل سایت (۵۸ صفحه) — زیپ را دانلود و dist/index.html را باز کنید."
+            gh release create "$TAG" --title "ویکک — پیش‌نمایش استاتیک" --notes "نسخه‌ی استاتیک کامل سایت (۵۸ صفحه) و اسکرین‌شات‌های ارائه — زیپ‌ها را دانلود کنید."
           gh release upload "$TAG" preview/vikak-static-preview.zip --clobber
+          gh release upload "$TAG" preview/vikak-screenshots.zip --clobber
+          gh release view "$TAG" --json assets --jq '.assets[] | "\(.name)  \(.size) bytes"'
