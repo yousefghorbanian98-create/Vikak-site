@@ -9,7 +9,8 @@
     "lint": "tsc --noEmit",
     "smoke": "tsx scripts/smoke.mjs",
     "check": "tsc --noEmit && next build && tsx scripts/smoke.mjs",
-    "export:static": "node scripts/export-static.mjs"
+    "export:static": "node scripts/export-static.mjs",
+    "export:woo": "tsx scripts/export-woocommerce.mjs"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",

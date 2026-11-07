@@ -1,0 +1,14 @@
+/*
+Theme Name: Vikak Child
+Theme URI: https://github.com/yousefghorbanian98-create/Vikak-site
+Description: دیزاین ویکک برای ووکامرس: پالت زغالی-مسی، تایپوگرافی وزیرمتن، کارت محصول اختصاصی. Needs a block/classic parent theme — recommended: Storefront or Blocksy.
+Author: Vikak
+Template: storefront
+Version: 1.0.0
+Text Domain: vikak-child
+Tags: woocommerce, rtl-language-support
+*/
+
+/* The design tokens and component styles live in assets/vikak.css (enqueued
+   below). This file only carries the theme header and a few WP-specific
+   overrides that must survive parent-theme updates. */
