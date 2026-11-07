@@ -35,7 +35,8 @@ export function compactToman(value: number): string {
   if (value >= 1_000_000) {
     const millions = value / 1_000_000;
     const rounded = millions >= 10 ? millions.toFixed(0) : millions.toFixed(1).replace(/\.0$/, '');
-    return `${toFa(rounded)} میلیون`;
+    // Persian decimal separator (٫ U+066B) instead of the Latin dot
+    return `${toFa(rounded).replace('.', '٫')} میلیون`;
   }
   return formatToman(value);
 }
