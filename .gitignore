@@ -4,6 +4,7 @@ out
 *.tsbuildinfo
 .DS_Store
 
-# generated preview artefacts (attached to GitHub Releases instead)
+# generated preview artefacts
 dist
-vikak-static-preview.zip
+/preview/*.zip
+!/preview/vikak-static-preview.zip
