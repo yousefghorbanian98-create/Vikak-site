@@ -21,10 +21,10 @@ export async function generateMetadata({
   if (!product) return { title: 'محصول پیدا نشد' };
 
   return {
-    title: `${product.title} — ${product.roaster}`,
+    title: `${product.title} از ${product.roaster}`,
     description: `${product.title} از ${product.roaster}. ${product.roastFa}، ۱۰۰٪ عربیکا، یادداشت‌های ${product.notes.join('، ')}.`,
     openGraph: {
-      title: `${product.title} — ${product.roaster}`,
+      title: `${product.title} از ${product.roaster}`,
       description: `${product.roastFa} · ۱۰۰٪ عربیکا · ${product.notes.join(' · ')}`,
       images: [{ url: product.image }],
     },
@@ -68,7 +68,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="shell">
           <div className="pdp">
             <div className="pdp-media">
-              <img src={product.image} alt={`${product.title} — ${product.roaster}`} />
+              <img src={product.image} alt={`${product.title} از ${product.roaster}`} />
             </div>
             <ProductBuyPanel product={product} />
           </div>

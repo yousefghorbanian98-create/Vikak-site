@@ -13,7 +13,7 @@ export default function NewsletterForm() {
         setDone(true);
       }}
     >
-      <label htmlFor="email" style={{ position: 'absolute', insetInlineStart: '-9999px' }}>
+      <label htmlFor="email" className="sr-only">
         ایمیل
       </label>
       <input

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { CartProvider } from '@/components/cart-provider';
+import SmoothScroll from '@/components/smooth-scroll';
 import '@fontsource-variable/vazirmatn';
 import '@fontsource/instrument-serif/400-italic.css';
 import '@fontsource/instrument-serif';
@@ -15,7 +16,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://vikak.coffee'),
   title: {
-    default: 'ویکک — برشته‌کاری دانه قهوه ۱۰۰٪ عربیکا',
+    default: 'ویکک، برشته‌کاری دانه قهوه ۱۰۰٪ عربیکا',
     template: '%s | ویکک',
   },
   description:
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fa_IR',
     siteName: 'ویکک',
-    title: 'ویکک — برشته‌کاری دانه قهوه ۱۰۰٪ عربیکا',
+    title: 'ویکک، برشته‌کاری دانه قهوه ۱۰۰٪ عربیکا',
     description:
       'از دان سبز خام تا سینگل‌اوریجین اسپشیالتی. رست تازه، قیمت شفاف، ارسال به سراسر ایران.',
     images: [{ url: '/images/hero-beans.jpg', width: 1536, height: 1024, alt: 'دانه قهوه عربیکا' }],
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fa" dir="rtl">
       <body>
+        <SmoothScroll />
         <CartProvider>{children}</CartProvider>
       </body>
     </html>

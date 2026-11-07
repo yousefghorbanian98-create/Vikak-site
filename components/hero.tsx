@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import HeroParticles from './hero-particles';
 import { products } from '@/data/products';
 import { toFa } from '@/lib/format';
 
@@ -8,9 +9,10 @@ export default function Hero() {
 
   return (
     <section className="hero">
+      <HeroParticles />
       <div className="shell hero-inner">
         <div className="hero-copy">
-          <span className="eyebrow">گروه برشته‌کاری ویکک — ایران</span>
+          <span className="eyebrow">گروه برشته‌کاری ویکک در ایران</span>
 
           <h1 className="display">
             هر دانه،
@@ -66,7 +68,7 @@ export default function Hero() {
             <span className="muted" style={{ fontSize: '0.7rem', letterSpacing: '0.1em' }}>
               رست این هفته
             </span>
-            <b>اتیوپی لکمپتی — رست روشن</b>
+            <b>اتیوپی لکمپتی، رست روشن</b>
             <span className="muted" style={{ fontSize: '0.72rem' }}>
               یاس، برگاموت، هلو
             </span>

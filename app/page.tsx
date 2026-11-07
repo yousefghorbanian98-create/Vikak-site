@@ -21,7 +21,7 @@ const PILLARS = [
   {
     i: 'I',
     title: 'فقط ۱۰۰٪ عربیکا',
-    body: 'هیچ روبوستا، هیچ پرکننده. اگر روی بسته عربیکا نوشته شده، کل بسته عربیکاست — همان چیزی که در فهرست می‌بینید.',
+    body: 'هیچ روبوستا، هیچ پرکننده. اگر روی بسته عربیکا نوشته شده، کل بسته عربیکاست، همان چیزی که در فهرست می‌بینید.',
   },
   {
     i: 'II',
@@ -83,7 +83,7 @@ export default function HomePage() {
             </div>
 
             <div className="split-copy">
-              <span className="eyebrow">کارگاه رست</span>
+              
               <h2 className="section-title">
                 پروفایل رست، جایی بین <em className="latin">first crack</em> و شکلات تلخ
               </h2>
@@ -120,8 +120,8 @@ export default function HomePage() {
           <div className="shell">
             <div className="section-head">
               <div>
-                <span className="eyebrow">راهنمای دم‌آوری</span>
-                <h2 className="section-title">چهار روش، چهار نسبت</h2>
+                
+                <h2 className="section-title">چهار روش دم‌آوری، چهار نسبت</h2>
                 <p className="lede">
                   دانه‌ی خوب با نسبت غلط هم بد می‌شود. این چهار دستور، نقطه‌ی شروع برای هر
                   خاستگاهی است که در فروشگاه می‌بینید.
@@ -145,7 +145,7 @@ export default function HomePage() {
           <div className="shell">
             <div className="section-head">
               <div>
-                <span className="eyebrow">پیشنهاد این هفته</span>
+                
                 <h2 className="section-title">اگر تازه شروع کرده‌اید، از اتیوپی شروع کنید</h2>
                 <p className="lede">
                   روشن‌ترین و گل‌دارترین بخش فهرست. برای کسی که می‌خواهد تفاوت یک سینگل‌اوریجین با
@@ -202,7 +202,7 @@ export default function HomePage() {
           <div className="shell">
             <div className="panel">
               <div className="panel-copy">
-                <span className="eyebrow">خبرنامه‌ی رست</span>
+                
                 <h2 className="section-title">هر پنجشنبه، فهرست تازه و نرخ روز</h2>
                 <p className="muted" style={{ margin: 0, fontSize: '0.9rem' }}>
                   یک ایمیل کوتاه: خاستگاه‌های تازه‌رسیده، دان‌های سبز موجود، و تغییرات نرخ. بدون

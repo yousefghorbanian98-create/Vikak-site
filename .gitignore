@@ -7,3 +7,9 @@ out
 # generated preview artefacts
 dist
 # NOTE: preview/vikak-static-preview.zip is tracked on purpose (public direct-download link)
+
+# tasteskill gate state (machine local)
+.taste-skill/
+
+# third-party agent skills are vendored locally, not committed (40 MB of assets)
+.claude/skills/taste/

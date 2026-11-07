@@ -512,7 +512,7 @@ export const products: Product[] = [
   {
     id: 'mizan-brazil-santos-5000',
     slug: 'mizan-brazil-santos-5000',
-    title: 'عربیکا برزیل سانتوس — عمده',
+    title: 'عربیکا برزیل سانتوس، عمده',
     origin: 'Brazil',
     originFa: 'برزیل',
     roaster: 'برشته‌کاری میزان',

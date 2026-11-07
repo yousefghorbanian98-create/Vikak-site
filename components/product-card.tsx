@@ -13,7 +13,7 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <article className="card">
       <Link href={`/products/${product.slug}`} className="card-media" aria-label={product.title}>
-        <img src={product.image} alt={`${product.title} — ${product.roaster}`} loading="lazy" />
+        <img src={product.image} alt={`${product.title}  از ${product.roaster}`} loading="lazy" />
         {product.tag ? <span className="card-tag">{product.tag}</span> : null}
       </Link>
 

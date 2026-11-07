@@ -19,7 +19,7 @@ export default function SiteHeader() {
   return (
     <header className="masthead">
       <div className="shell masthead-inner">
-        <Link href="/" className="brand" aria-label="ویکک — صفحه‌ی اصلی">
+        <Link href="/" className="brand" aria-label="ویکک، صفحه‌ی اصلی">
           <span className="brand-mark" aria-hidden="true">
             V
           </span>

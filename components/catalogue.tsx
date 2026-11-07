@@ -50,7 +50,7 @@ export default function Catalogue() {
       <div className="shell">
         <div className="section-head">
           <div>
-            <span className="eyebrow">فهرست محصولات — آبان ۱۴۰۵</span>
+            <span className="eyebrow">فهرست محصولات، آبان ۱۴۰۵</span>
             <h2 className="section-title">
               پنجاه‌وچند دانه‌ی <em className="latin">100% Arabica</em>، از دان سبز تا اسپشیالتی
             </h2>
