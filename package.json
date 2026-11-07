@@ -8,11 +8,12 @@
     "start": "next start -p 3000 -H 0.0.0.0",
     "lint": "tsc --noEmit",
     "smoke": "npx tsx scripts/smoke.mjs",
-    "check": "tsc --noEmit && npx tsx evals/run.mjs && next build && npx tsx scripts/smoke.mjs",
+    "check": "tsc --noEmit && npx tsx evals/run.mjs && next build && node scripts/export-static.mjs && node scripts/check-export.mjs",
     "export:static": "node scripts/export-static.mjs",
     "export:woo": "npx tsx scripts/export-woocommerce.mjs",
     "evals": "npx tsx evals/run.mjs",
-    "ecc:audit": "node .claude/scripts/harness-audit.js"
+    "ecc:audit": "node .claude/scripts/harness-audit.js",
+    "check:export": "node scripts/check-export.mjs"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",

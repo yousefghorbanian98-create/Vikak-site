@@ -49,21 +49,8 @@ jobs:
       - name: Static export
         run: node scripts/export-static.mjs
 
-      - name: Editorial gate (no em dash in rendered copy)
-        run: node -e "
-          const html = require('node:fs').readFileSync('dist/index.html', 'utf8');
-          const hits = html.split('\u2014').length - 1;
-          if (hits > 0) { console.error('::error::' + hits + ' em dash(es) in rendered copy'); process.exit(1); }
-          console.log('no em dashes in dist/index.html');
-          "
-
-      - name: Static export carries no absolute origin
-        run: node -e "
-          const html = require('node:fs').readFileSync('dist/index.html', 'utf8');
-          const bad = [...html.matchAll(/https?:\/\/(?!www\.w3\.org|schema\.org)[a-z0-9.-]+/gi)].map(m => m[0]);
-          if (bad.length) { console.error('::error::absolute origin in export: ' + bad.join(', ')); process.exit(1); }
-          console.log('export is origin-free');
-          "
+      - name: Editorial and portability gate on the export
+        run: node scripts/check-export.mjs
 
   ecc:
     runs-on: ubuntu-latest
