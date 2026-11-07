@@ -20,6 +20,19 @@
 می‌خواند و سبد را به checkout واقعی ووکامرس تحویل می‌دهد. دلیل: کوپن، مالیات، هزینه‌ی وزن‌محور،
 ایمیل سفارش و درگاه، همه در ووکامرس تست‌شده‌اند.
 
+## دامنه
+
+نشانی سایت هیچ‌جا در کد هارد‌کد نمی‌شود. با `NEXT_PUBLIC_SITE_URL` تنظیم می‌شود
+(`lib/site.ts`) و همان مقدار در `metadataBase`، canonical، `sitemap.xml` و `robots.txt`
+استفاده می‌شود. برای دامنه‌ی `.ir` کافی است:
+
+```
+NEXT_PUBLIC_SITE_URL=https://vikak.ir
+```
+
+خروجی استاتیک (`dist/`) نشانی مطلق ندارد؛ لینک‌ها به مسیر نسبی تبدیل می‌شوند تا از
+`file://` هم باز شود.
+
 ## نصب
 
 1. `wordpress/vikak-headless.php` را در `wp-content/mu-plugins/` بگذارید (پوشه را بسازید اگر نیست).
@@ -27,22 +40,22 @@
 
 ```php
 // فقط دامنه‌ی فرانت اجازه‌ی ساخت سبد (POST) دارد
-putenv( 'VIKAK_STOREFRONT_ORIGINS=https://vikak.coffee,https://www.vikak.coffee' );
+putenv( 'VIKAK_STOREFRONT_ORIGINS=https://vikak.ir,https://www.vikak.ir' );
 ```
 
 3. در فرانت (`.env.local` یا تنظیمات هاست):
 
 ```bash
-NEXT_PUBLIC_WP_BASE_URL=https://shop.vikak.coffee
+NEXT_PUBLIC_WP_BASE_URL=https://shop.vikak.ir
 WP_REVALIDATE_SECONDS=300
 ```
 
 4. تست دستی قرارداد:
 
 ```bash
-curl -s https://shop.vikak.coffee/wp-json/vikak/v1/catalog | head -c 300
-curl -s https://shop.vikak.coffee/wp-json/vikak/v1/catalog/espresso-house-blend
-curl -s -X POST https://shop.vikak.coffee/wp-json/vikak/v1/cart \
+curl -s https://shop.vikak.ir/wp-json/vikak/v1/catalog | head -c 300
+curl -s https://shop.vikak.ir/wp-json/vikak/v1/catalog/espresso-house-blend
+curl -s -X POST https://shop.vikak.ir/wp-json/vikak/v1/cart \
   -H 'Content-Type: application/json' \
   -d '{"items":[{"variation_id":123,"quantity":2}]}'
 ```

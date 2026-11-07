@@ -47,7 +47,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (Array.isArray(parsed)) setLines(parsed);
       }
     } catch {
-      /* corrupt storage — start clean */
+      /* corrupt storage: start clean */
     }
     setHydrated(true);
   }, []);

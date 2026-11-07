@@ -1,0 +1,10 @@
+# Default reviewers for every change.
+* @yousefghorbanian98-create
+
+# Agent toolchain and gates need explicit review: they govern every commit.
+/.claude/            @yousefghorbanian98-create
+/.github/            @yousefghorbanian98-create
+/evals/              @yousefghorbanian98-create
+/AGENTS.md           @yousefghorbanian98-create
+/SECURITY.md         @yousefghorbanian98-create
+/wordpress/          @yousefghorbanian98-create

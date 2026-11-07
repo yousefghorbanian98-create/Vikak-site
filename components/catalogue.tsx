@@ -119,7 +119,7 @@ export default function Catalogue({
 
         <p className="muted" style={{ fontSize: '0.8rem', marginBottom: '1.5rem' }}>
           {toFa(list.length)} محصول نمایش داده می‌شود
-          {source === 'wordpress' ? ' — قیمت‌ها زنده از ووکامرس' : ' — نسخه‌ی نمایشی'}
+          {source === 'wordpress' ? ' · قیمت‌ها زنده از ووکامرس' : ' · نسخه‌ی نمایشی'}
         </p>
 
         <div className="grid">

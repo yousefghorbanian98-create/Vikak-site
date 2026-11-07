@@ -72,7 +72,7 @@ lib/format.ts         # اعداد فارسی، تومان، برچسب گرم/�
 ## معماری هدلس (وردپرس بک‌اند، همین فرانت)
 
 ```bash
-NEXT_PUBLIC_WP_BASE_URL=https://shop.vikak.coffee   # خالی = حالت نمایشی با داده‌ی بسته‌بندی‌شده
+NEXT_PUBLIC_WP_BASE_URL=https://shop.vikak.ir   # خالی = حالت نمایشی با داده‌ی بسته‌بندی‌شده
 ```
 
 - قیمت/موجودی/تصویر از ووکامرس می‌آید؛ سبد به checkout واقعی ووکامرس تحویل می‌شود (زرین‌پال،
@@ -91,3 +91,34 @@ npm run export:woo   # → migration/woocommerce-products.csv (۵۳ محصول،
 
 چایلد-تم با همین دیزاین در `wordpress/vikak-child/` است و راهنمای گام‌به‌گام نصب، ایمپورت و
 پیکربندی درگاه در `wordpress/README.md` آمده است.
+
+## ECC — تنها زنجیره‌ابزار پروژه
+
+کل پروژه تحت **ECC** (`ecc-universal@2.2.3`) ساخته و بازبینی می‌شود. هیچ بسته‌ی مهارت
+شخص‌ثالثی در این مخزن نیست. نصب داخل خود پروژه انجام شده است:
+
+```bash
+npx -y ecc-universal@2.2.3 install \
+  --target claude-project --profile minimal \
+  --with framework:nextjs --with lang:typescript --with skill:security-review
+```
+
+- وضعیت نصب: `.claude/ecc/install-state.json` (اسکیمای `ecc.install.v1`)
+- محتوا: ۱۳۷ مهارت، ۹۴ دستور، ۶۸ ایجنت، ۲۳ بسته‌ی rule
+- دستورالعمل عامل: `AGENTS.md` · حافظه‌ی پروژه: `.claude/memory.md`
+- گارد محلی: `.claude/hooks/guard-bash.js` (جلوگیری از حذف ریشه و مهارت شخص‌ثالث)
+
+گیت‌های ECC:
+
+```bash
+node .claude/scripts/harness-audit.js        # امتیاز هارنس (اکنون ۳۹/۳۹)
+node .claude/scripts/skills-health.js
+npx -y ecc-universal@2.2.3 doctor
+npx -y ecc-universal@2.2.3 status
+npx -y ecc-universal@2.2.3 security-ioc-scan
+node evals/run.mjs                           # ۱۶ ایوال دامنه‌ای
+```
+
+`evals/run.mjs` بدون شبکه اجرا می‌شود و چیزهایی را قفل می‌کند که یک عامل می‌تواند
+بی‌سروصدا بشکند: صحت قیمت و تومان، وزن‌محور بودن نرخ کیلو، RTL، ارقام فارسی، نبودِ
+نشانی مطلق (انتقال به دامنه‌ی `.ir`)، نبود راز در مخزن، و رفتار فروشگاه در قطعی ووکامرس.

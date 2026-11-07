@@ -19,7 +19,7 @@ export default function NewsletterForm() {
       <input
         id="email"
         type="email"
-        placeholder={done ? 'ثبت شد — ممنون' : 'ایمیل شما'}
+        placeholder={done ? 'ثبت شد، ممنون' : 'ایمیل شما'}
         autoComplete="email"
         required
         disabled={done}

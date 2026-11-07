@@ -5,7 +5,7 @@ import Lenis from 'lenis';
 
 /**
  * Smooth scrolling with Lenis, wired to requestAnimationFrame.
- * Disabled entirely when the visitor prefers reduced motion — the CSS
+ * Disabled entirely when the visitor prefers reduced motion; the CSS
  * `prefers-reduced-motion` block already stops every transition, and native
  * scrolling is the correct fallback there.
  */

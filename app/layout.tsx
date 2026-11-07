@@ -4,6 +4,7 @@ import SmoothScroll from '@/components/smooth-scroll';
 import '@fontsource-variable/vazirmatn';
 import '@fontsource/instrument-serif/400-italic.css';
 import '@fontsource/instrument-serif';
+import { siteUrl } from '@/lib/site';
 import './globals.css';
 
 export const viewport: Viewport = {
@@ -14,7 +15,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://vikak.coffee'),
+  metadataBase: new URL(siteUrl()),
   title: {
     default: 'ویکک، برشته‌کاری دانه قهوه ۱۰۰٪ عربیکا',
     template: '%s | ویکک',

@@ -4,12 +4,15 @@ out
 *.tsbuildinfo
 .DS_Store
 
+# environment / secrets (only .env.example is committed)
+.env
+.env.*
+!.env.example
+
 # generated preview artefacts
 dist
 # NOTE: preview/vikak-static-preview.zip is tracked on purpose (public direct-download link)
 
-# tasteskill gate state (machine local)
-.taste-skill/
-
-# third-party agent skills are vendored locally, not committed (40 MB of assets)
-.claude/skills/taste/
+# ECC-managed toolchain: .claude/ (rules, agents, commands, skills, install-state)
+# is committed on purpose — ECC is the only skill/framework source for this project.
+# Third-party skill bundles are not permitted.

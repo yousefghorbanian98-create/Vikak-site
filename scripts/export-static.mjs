@@ -53,6 +53,12 @@ function rewrite(html, depth) {
       // 3. static top-level pages
       .replace(/href="\/about"/g, `href="${upAttr}about.html"`)
       .replace(/href="\/faq"/g, `href="${upAttr}faq.html"`)
+      // 3b. metadata URLs: the standalone preview has no origin (and the
+      // production origin is not decided yet, it will be a .ir domain).
+      // Collapse absolute self-origin URLs to relative paths so the exported
+      // HTML never carries a placeholder host.
+      .replaceAll('http://localhost:3000/', upAttr || './')
+      .replaceAll('http://localhost:3000', upAttr || './')
       // 4. home + home anchors
       .replace(/href="\/#([a-zA-Z-]+)"/g, `href="${upAttr}index.html#$1"`)
       .replace(/href="\/"/g, `href="${upAttr}index.html"`)

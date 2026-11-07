@@ -1,0 +1,91 @@
+name: Quality gate
+
+# Mirrors the local ECC gate. Every pull request must pass these before merge.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: Evals (money, RTL, secrets, WooCommerce outage behaviour)
+        run: npx tsx evals/run.mjs
+
+      - name: Production build
+        run: npm run build
+
+      - name: Smoke test against the built app
+        run: |
+          npx next start -p 3000 -H 127.0.0.1 &
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:3000/ >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          npx tsx scripts/smoke.mjs http://127.0.0.1:3000
+
+      - name: Static export
+        run: node scripts/export-static.mjs
+
+      - name: Editorial gate (no em dashes, no Latin prices)
+        run: |
+          if grep -n $'\u2014' dist/index.html; then
+            echo "::error::em dash found in rendered copy"
+            exit 1
+          fi
+
+  ecc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: ECC install state is committed and valid
+        run: |
+          test -f .claude/ecc/install-state.json
+          node -e "const s=require('./.claude/ecc/install-state.json'); if(s.schemaVersion!=='ecc.install.v1') process.exit(1);"
+
+      - name: No third-party skill bundles
+        run: |
+          forbidden="taste finn-build finn-spec ui-ux-pro-max design-motion-principles"
+          for s in $forbidden; do
+            if [ -d ".claude/skills/$s" ]; then
+              echo "::error::$s must not be present; ECC is the only skill source"
+              exit 1
+            fi
+          done
+
+      - name: ECC doctor
+        run: npx -y ecc-universal@2.2.3 doctor
+
+      - name: ECC supply-chain IOC scan
+        run: npx -y ecc-universal@2.2.3 security-ioc-scan
+
+      - name: Harness audit
+        run: node .claude/scripts/harness-audit.js

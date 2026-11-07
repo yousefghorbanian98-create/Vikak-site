@@ -2,7 +2,7 @@
  * Catalogue access for pages.
  *
  * One rule: WooCommerce when configured, bundled data when not. Pages never
- * branch on this — they always get a Product[].
+ * branch on this: they always get a Product[].
  */
 import { products as bundledProducts } from '@/data/products';
 import { fetchCatalog, fetchProduct, isHeadlessEnabled } from './wp';
@@ -19,7 +19,7 @@ export async function getCatalogue(): Promise<CatalogueResult> {
   if (isHeadlessEnabled()) {
     const live = await fetchCatalog();
     if (live) return { products: live, source: 'wordpress' };
-    console.warn('[vikak] WordPress configured but returned no catalogue — using bundled data');
+    console.warn('[vikak] WordPress configured but returned no catalogue; using bundled data');
   }
   return { products: bundledProducts, source: 'bundled' };
 }

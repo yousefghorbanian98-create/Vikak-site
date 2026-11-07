@@ -1,8 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { products } from '@/data/products';
+import { siteUrl } from '@/lib/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://vikak.coffee';
+  const base = siteUrl();
   const now = new Date();
 
   return [

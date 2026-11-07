@@ -30,7 +30,7 @@ export function gramsLabel(grams: number): string {
   return `${toFa(grams)} گرم`;
 }
 
-/** ~۴٫۲ میلیون تومان — used for compact badges. */
+/** ~۴٫۲ میلیون تومان, used for compact badges. */
 export function compactToman(value: number): string {
   if (value >= 1_000_000) {
     const millions = value / 1_000_000;

@@ -12,21 +12,69 @@
   },
   "permissions": {
     "allow": [
-      "Bash(npm run build)",
-      "Bash(npm run dev)",
-      "Bash(npm run lint)",
-      "Bash(npx tsc --noEmit)",
+      "Bash(git diff:*)",
       "Bash(git status)",
-      "Bash(git diff:*)"
+      "Bash(node .claude/scripts/harness-audit.js)",
+      "Bash(npm run build)",
+      "Bash(npm run check)",
+      "Bash(npm run dev)",
+      "Bash(npm run export:static)",
+      "Bash(npm run lint)",
+      "Bash(npm run smoke)",
+      "Bash(npx -y ecc-universal@2.2.3 doctor)",
+      "Bash(npx -y ecc-universal@2.2.3 security-ioc-scan)",
+      "Bash(npx -y ecc-universal@2.2.3 status)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx tsx evals/run.mjs)"
     ],
     "deny": [
-      "Bash(rm -rf:*)",
+      "Bash(> /dev/*)",
+      "Bash(chmod 777:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(curl:* | sh)",
       "Bash(curl:*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(rm -rf:*)",
+      "Bash(scp:*)",
+      "Bash(ssh:*)",
+      "Bash(sudo:*)",
       "Bash(wget:*)",
+      "Read(./**/*.key)",
+      "Read(./**/*.p12)",
+      "Read(./**/*.pem)",
+      "Read(./**/.git-credentials)",
+      "Read(./**/.npmrc)",
+      "Read(./**/id_rsa*)",
+      "Read(./.claude/skills/taste/**)",
       "Read(./.env)",
       "Read(./.env.*)",
-      "Read(./**/*.pem)",
-      "Read(./**/*.key)"
+      "Read(/etc/shadow)"
+    ]
+  },
+  "includeCoAuthoredBy": false,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/guard-bash.js"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/session-end-check.js"
+          }
+        ]
+      }
     ]
   }
 }

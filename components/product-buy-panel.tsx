@@ -136,7 +136,7 @@ export default function ProductBuyPanel({
       <div className="accordion">
         <details open>
           <summary>یادداشت‌های طعمی</summary>
-          <p>{product.notes.join(' · ')} — پروفایل پیشنهادی برای دم‌آوری فیلتر و اسپرسو.</p>
+          <p>{product.notes.join(' · ')}؛ پروفایل پیشنهادی برای دم‌آوری فیلتر و اسپرسو.</p>
         </details>
         <details>
           <summary>ارسال و نگهداری</summary>
