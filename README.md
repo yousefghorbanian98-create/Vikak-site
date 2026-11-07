@@ -92,6 +92,16 @@ npm run export:woo   # → migration/woocommerce-products.csv (۵۳ محصول،
 چایلد-تم با همین دیزاین در `wordpress/vikak-child/` است و راهنمای گام‌به‌گام نصب، ایمپورت و
 پیکربندی درگاه در `wordpress/README.md` آمده است.
 
+## اسکرین‌شات‌ها برای کارفرما
+
+دانلود مستقیم (بدون نیاز به حساب GitHub):
+
+**https://github.com/yousefghorbanian98-create/Vikak-site/raw/arena/2b6af4dd-vikak-site/preview/vikak-screenshots.zip**
+
+۹ نما، دسکتاپ ۱۴۴۰ رتینا و موبایل ۳۹۰ رتینا، به‌همراه `index.html` که گالری همه‌ی
+نماها را از روی دیسک باز می‌کند. جزئیات هر تصویر و SHA-256 در
+[`preview/SCREENSHOTS.md`](preview/SCREENSHOTS.md).
+
 ## ECC — تنها زنجیره‌ابزار پروژه
 
 کل پروژه تحت **ECC** (`ecc-universal@2.2.3`) ساخته و بازبینی می‌شود. هیچ بسته‌ی مهارت

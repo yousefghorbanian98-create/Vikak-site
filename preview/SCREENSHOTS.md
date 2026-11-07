@@ -1,5 +1,17 @@
 # اسکرین‌شات‌های ویکک برای کارفرما
 
+## دانلود مستقیم
+
+**https://github.com/yousefghorbanian98-create/Vikak-site/raw/arena/2b6af4dd-vikak-site/preview/vikak-screenshots.zip**
+
+- حجم: `3190404` بایت (~۳٫۱ مگابایت)
+- SHA-256: `0aa15acd028ac202ccf4c58a2b98418b3af192445eaeea37ce51243704813072`
+- پس از باز کردن زیپ، `vikak-screenshots/index.html` را باز کنید: گالری همه‌ی نماهاست.
+
+این لینک از هر مرورگری بدون نیاز به حساب GitHub دانلود می‌شود. اگر ترجیح می‌دهید
+فایل روی شاخه‌ی `main` باشد، پس از ادغام PR شماره‌ی ۱ همین مسیر با `main` جای
+`arena/2b6af4dd-vikak-site` در دسترس است.
+
 آرشیو: [`vikak-screenshots.zip`](vikak-screenshots.zip) — ۳٫۱ مگابایت، ۹ تصویر + گالری.
 
 ## داخل آرشیو
