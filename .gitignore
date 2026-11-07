@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+*.tsbuildinfo
+.DS_Store
+
+# generated preview artefacts (attached to GitHub Releases instead)
+dist
+vikak-static-preview.zip
