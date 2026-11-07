@@ -7,4 +7,3 @@ out
 # generated preview artefacts
 dist
 /preview/*.zip
-!/preview/vikak-static-preview.zip
