@@ -5,6 +5,16 @@
 
 > این نسخه **دمو** است: سبد خرید در `localStorage` مرورگر ذخیره می‌شود و درگاه پرداخت متصل نیست.
 
+## دانلود پیش‌نمایش بدون سرور
+
+نسخه‌ی استاتیک کامل سایت (۵۸ صفحه، مسیرهای نسبی، فونت و تصاویر محلی) به‌صورت یک آرشیو:
+
+- **دانلود مستقیم:** [`preview/vikak-static-preview.zip`](https://raw.githubusercontent.com/yousefghorbanian98-create/Vikak-site/arena/2b6af4dd-vikak-site/preview/vikak-static-preview.zip)
+- یا صفحه‌ی فایل در گیت‌هاب: [`preview/vikak-static-preview.zip`](https://github.com/yousefghorbanian98-create/Vikak-site/blob/arena/2b6af4dd-vikak-site/preview/vikak-static-preview.zip)
+
+پس از دانلود، از حالت فشرده خارج کنید و `dist/index.html` را در مرورگر باز کنید.
+بازتولید آرشیو: `npm run build && npm run export:static && zip -qr preview/vikak-static-preview.zip dist`
+
 ## اجرا
 
 ```bash
