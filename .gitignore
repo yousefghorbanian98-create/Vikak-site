@@ -6,4 +6,4 @@ out
 
 # generated preview artefacts
 dist
-/preview/*.zip
+# NOTE: preview/vikak-static-preview.zip is tracked on purpose (public direct-download link)
