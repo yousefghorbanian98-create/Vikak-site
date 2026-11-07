@@ -1,0 +1,18 @@
+node_modules
+.next
+out
+*.tsbuildinfo
+.DS_Store
+
+# environment / secrets (only .env.example is committed)
+.env
+.env.*
+!.env.example
+
+# generated preview artefacts
+dist
+# NOTE: preview/vikak-static-preview.zip is tracked on purpose (public direct-download link)
+
+# ECC-managed toolchain: .claude/ (rules, agents, commands, skills, install-state)
+# is committed on purpose — ECC is the only skill/framework source for this project.
+# Third-party skill bundles are not permitted.
