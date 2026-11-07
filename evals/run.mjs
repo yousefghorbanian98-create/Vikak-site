@@ -131,8 +131,15 @@ eval_case('presentation/no-latin-price-in-ui', 'Persian prices never leak Latin 
 });
 
 eval_case('presentation/no-em-dash-in-copy', 'Editorial rule: no em dashes in user-facing strings', () => {
-  const files = ['components', 'app', 'lib'].flatMap(dir => sourceFiles(join(root, dir)));
-  const offenders = files.filter(f => readFileSync(f, 'utf8').includes('\u2014'));
+  const files = ['components', 'app', 'lib', 'data'].flatMap(dir => sourceFiles(join(root, dir)));
+  const offenders = files.filter(file => {
+    // Comments may use an em dash; only copy the visitor can read is checked.
+    const userFacing = readFileSync(file, 'utf8')
+      .split('\n')
+      .filter(line => !/^\s*(\/\/|\*|\/\*)/.test(line))
+      .join('\n');
+    return userFacing.includes('\u2014');
+  });
   assert(offenders.length === 0, offenders.map(f => f.replace(root, '')).join(', '));
 });
 

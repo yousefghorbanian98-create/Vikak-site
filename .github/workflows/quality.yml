@@ -49,12 +49,21 @@ jobs:
       - name: Static export
         run: node scripts/export-static.mjs
 
-      - name: Editorial gate (no em dashes, no Latin prices)
-        run: |
-          if grep -n $'\u2014' dist/index.html; then
-            echo "::error::em dash found in rendered copy"
-            exit 1
-          fi
+      - name: Editorial gate (no em dash in rendered copy)
+        run: node -e "
+          const html = require('node:fs').readFileSync('dist/index.html', 'utf8');
+          const hits = html.split('\u2014').length - 1;
+          if (hits > 0) { console.error('::error::' + hits + ' em dash(es) in rendered copy'); process.exit(1); }
+          console.log('no em dashes in dist/index.html');
+          "
+
+      - name: Static export carries no absolute origin
+        run: node -e "
+          const html = require('node:fs').readFileSync('dist/index.html', 'utf8');
+          const bad = [...html.matchAll(/https?:\/\/(?!www\.w3\.org|schema\.org)[a-z0-9.-]+/gi)].map(m => m[0]);
+          if (bad.length) { console.error('::error::absolute origin in export: ' + bad.join(', ')); process.exit(1); }
+          console.log('export is origin-free');
+          "
 
   ecc:
     runs-on: ubuntu-latest
@@ -71,15 +80,32 @@ jobs:
           test -f .claude/ecc/install-state.json
           node -e "const s=require('./.claude/ecc/install-state.json'); if(s.schemaVersion!=='ecc.install.v1') process.exit(1);"
 
+      - name: Committed install-state is machine independent
+        run: node scripts/normalize-ecc-state.mjs --check
+
       - name: No third-party skill bundles
         run: |
-          forbidden="taste finn-build finn-spec ui-ux-pro-max design-motion-principles"
-          for s in $forbidden; do
+          for s in taste finn-build finn-spec ui-ux-pro-max design-motion-principles; do
             if [ -d ".claude/skills/$s" ]; then
               echo "::error::$s must not be present; ECC is the only skill source"
               exit 1
             fi
           done
+
+      # The installer records absolute paths, so a state committed on one machine
+      # never validates on another. Re-installing proves the tree is reproducible
+      # and gives doctor a state that matches this runner.
+      - name: ECC install is reproducible
+        run: |
+          npx -y ecc-universal@2.2.3 install \
+            --target claude-project --profile minimal \
+            --with framework:nextjs --with lang:typescript --with skill:security-review
+
+      - name: Project hooks and settings survived the install
+        run: |
+          test -f .claude/hooks/guard-bash.js
+          test -f .claude/hooks/session-end-check.js
+          node -e "const s=require('./.claude/settings.json'); if(!s.hooks?.PreToolUse) process.exit(1);"
 
       - name: ECC doctor
         run: npx -y ecc-universal@2.2.3 doctor
@@ -87,5 +113,5 @@ jobs:
       - name: ECC supply-chain IOC scan
         run: npx -y ecc-universal@2.2.3 security-ioc-scan
 
-      - name: Harness audit
+      - name: ECC harness audit
         run: node .claude/scripts/harness-audit.js

@@ -7,11 +7,11 @@
     "build": "next build",
     "start": "next start -p 3000 -H 0.0.0.0",
     "lint": "tsc --noEmit",
-    "smoke": "tsx scripts/smoke.mjs",
-    "check": "tsc --noEmit && tsx evals/run.mjs && next build && tsx scripts/smoke.mjs",
+    "smoke": "npx tsx scripts/smoke.mjs",
+    "check": "tsc --noEmit && npx tsx evals/run.mjs && next build && npx tsx scripts/smoke.mjs",
     "export:static": "node scripts/export-static.mjs",
-    "export:woo": "tsx scripts/export-woocommerce.mjs",
-    "evals": "tsx evals/run.mjs",
+    "export:woo": "npx tsx scripts/export-woocommerce.mjs",
+    "evals": "npx tsx evals/run.mjs",
     "ecc:audit": "node .claude/scripts/harness-audit.js"
   },
   "dependencies": {
