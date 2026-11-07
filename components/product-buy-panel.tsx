@@ -6,7 +6,13 @@ import { useState } from 'react';
 import { priceLabel, gramsLabel, toFa } from '@/lib/format';
 import type { Product } from '@/data/products';
 
-export default function ProductBuyPanel({ product }: { product: Product }) {
+export default function ProductBuyPanel({
+  product,
+  headless = false,
+}: {
+  product: Product;
+  headless?: boolean;
+}) {
   const { add, open } = useCart();
   const [variantId, setVariantId] = useState(product.variants[0].id);
   const [qty, setQty] = useState(1);
@@ -104,15 +110,22 @@ export default function ProductBuyPanel({ product }: { product: Product }) {
                 roaster: product.roaster,
                 price: variant.price,
                 image: product.image,
+                wooVariationId: variant.wooVariationId,
               },
               qty,
             );
             open();
           }}
         >
-          افزودن به سبد — {priceLabel(variant.price * qty)}
+          افزودن به سبد، {priceLabel(variant.price * qty)}
         </button>
       </div>
+
+      {headless ? (
+        <p className="fineprint" style={{ margin: 0 }}>
+          قیمت و موجودی زنده از ووکامرس خوانده می‌شود؛ پرداخت در درگاه امن ووکامرس انجام می‌شود.
+        </p>
+      ) : null}
 
       <p className="fineprint" style={{ margin: 0 }}>
         {variant.note

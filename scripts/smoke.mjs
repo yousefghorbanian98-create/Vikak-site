@@ -66,6 +66,22 @@ check('sitemap lists all products', products.every(p => sitemap.html.includes(`/
 const robots = await get('/robots.txt');
 check('robots present', robots.html.includes('Sitemap:'));
 
+// ---------- headless contract ----------
+const checkout = await fetch(`${base}/api/checkout`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ items: [] }),
+});
+check('checkout rejects empty cart', [400, 503].includes(checkout.status), String(checkout.status));
+
+const catalogSource = home.html.includes('زنده از ووکامرس')
+  ? 'wordpress'
+  : home.html.includes('نسخه‌ی نمایشی')
+    ? 'bundled'
+    : 'unknown';
+check('catalogue states its source', catalogSource !== 'unknown', catalogSource);
+check('catalogue renders products regardless of source', home.html.includes('class="card"'));
+
 // ---------- cli colorized report ----------
 const pass = checks.filter(c => c.ok).length;
 const color = (ok) => (ok ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m');

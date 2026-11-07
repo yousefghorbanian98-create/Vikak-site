@@ -1,12 +1,55 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useCart } from './cart-provider';
 import { priceLabel } from '@/lib/format';
 
 export default function CartDrawer() {
   const { lines, subtotal, isOpen, close, setQty, remove } = useCart();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  /**
+   * Hand the cart to WooCommerce: it owns the session, coupons, shipping and
+   * the payment gateway. The response is a real checkout URL.
+   */
+  const checkout = async () => {
+    setError(null);
+    setBusy(true);
+
+    try {
+      const items = lines
+        .map(line => ({ variation_id: line.wooVariationId, quantity: line.qty }))
+        .filter(item => Boolean(item.variation_id));
+
+      if (!items.length) {
+        window.location.href = '/api/checkout';
+        return;
+      }
+
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        checkoutUrl?: string;
+        message?: string;
+      };
+
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+        return;
+      }
+
+      setError(data.message || 'پرداخت در این نسخه فعال نیست.');
+    } catch {
+      setError('ارتباط با سرور برقرار نشد. دوباره تلاش کنید.');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -92,12 +135,17 @@ export default function CartDrawer() {
               <span>مبلغ قابل پرداخت</span>
               <b>{priceLabel(subtotal)}</b>
             </div>
-            <button className="btn btn-primary btn-block" type="button">
-              ادامه‌ی فرآیند خرید
+            <button className="btn btn-primary btn-block" type="button" onClick={checkout} disabled={busy}>
+              {busy ? 'در حال انتقال به درگاه…' : 'ادامه‌ی فرآیند خرید'}
             </button>
+            {error ? (
+              <p className="fineprint" role="alert" style={{ color: '#e2a05f' }}>
+                {error}
+              </p>
+            ) : null}
             <p className="fineprint">
-              نمونه‌ی نمایشی: درگاه پرداخت در این نسخه متصل نیست. سفارش‌ها پس از تأیید موجودی و
-              هماهنگی تلفنی نهایی می‌شوند.
+              پرداخت و ارسال در درگاه ووکامرس نهایی می‌شود؛ اگر درگاه هنوز وصل نشده باشد، سفارش‌ها
+              پس از تأیید موجودی و هماهنگی تلفنی ثبت می‌شوند.
             </p>
           </footer>
         ) : null}

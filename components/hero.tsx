@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import HeroParticles from './hero-particles';
-import { products } from '@/data/products';
 import { toFa } from '@/lib/format';
 
-export default function Hero() {
+import type { Product } from '@/data/products';
+
+export default function Hero({ products }: { products: Product[] }) {
   const roasterCount = new Set(products.map(p => p.roaster)).size;
   const originCount = new Set(products.map(p => p.originFa)).size;
 

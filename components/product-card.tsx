@@ -63,6 +63,7 @@ export default function ProductCard({ product }: { product: Product }) {
                   roaster: product.roaster,
                   price: cheapestVariant.price,
                   image: product.image,
+                  wooVariationId: cheapestVariant.wooVariationId,
                 });
                 open();
               }}

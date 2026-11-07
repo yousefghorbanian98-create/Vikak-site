@@ -13,6 +13,8 @@ export type CartLine = {
   price: number;
   qty: number;
   image: string;
+  /** WooCommerce variation id, present only when the catalogue came from WP. */
+  wooVariationId?: number;
 };
 
 type CartContextValue = {

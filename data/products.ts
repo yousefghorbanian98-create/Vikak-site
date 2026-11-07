@@ -12,6 +12,8 @@ export type Variant = {
   /** Published per-kilo equivalent, when the source list states one. */
   kgPrice?: number;
   note?: string;
+  /** WooCommerce variation id — set only when the catalogue is served from WP. */
+  wooVariationId?: number;
 };
 
 export type Product = {

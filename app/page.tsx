@@ -4,7 +4,7 @@ import SiteFooter from '@/components/site-footer';
 import Hero from '@/components/hero';
 import Catalogue from '@/components/catalogue';
 import NewsletterForm from '@/components/newsletter-form';
-import { products } from '@/data/products';
+import { getCatalogue } from '@/lib/catalog';
 import { toFa } from '@/lib/format';
 
 const MARQUEE = [
@@ -42,7 +42,11 @@ const BREW = [
   { name: 'Chemex', fa: 'کمکس', body: '۳۰ گرم، ۵۰۰ گرم آب، فیلتر ضخیم. برای دانه‌های اتیوپی و کنیا، تمیزی بالا.' },
 ];
 
-export default function HomePage() {
+// catalogue comes from WooCommerce when configured, bundled data otherwise
+export const revalidate = 300;
+
+export default async function HomePage() {
+  const { products, source } = await getCatalogue();
   const featured = products.filter(p => p.origin === 'Ethiopia').slice(0, 3);
 
   return (
@@ -50,7 +54,7 @@ export default function HomePage() {
       <SiteHeader />
 
       <main>
-        <Hero />
+        <Hero products={products} />
 
         <div className="marquee" aria-hidden="true">
           <div className="marquee-track">
@@ -70,7 +74,7 @@ export default function HomePage() {
           ))}
         </section>
 
-        <Catalogue />
+        <Catalogue products={products} source={source} />
 
         <section className="section" id="roastery" style={{ scrollMarginTop: '90px' }}>
           <div className="shell split">

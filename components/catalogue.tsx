@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import ProductCard from './product-card';
-import { products, roastFilters, roasters, lowestKgPrice, type RoastLevel } from '@/data/products';
+import { roastFilters, roasters, lowestKgPrice, type Product, type RoastLevel } from '@/data/products';
 import { toFa } from '@/lib/format';
 
 type Sort = 'recommended' | 'kg-asc' | 'kg-desc' | 'price-asc';
@@ -14,10 +14,21 @@ const SORTS: { id: Sort; label: string }[] = [
   { id: 'price-asc', label: 'ارزان‌ترین بسته' },
 ];
 
-export default function Catalogue() {
+export default function Catalogue({
+  products,
+  source,
+}: {
+  products: Product[];
+  source: 'wordpress' | 'bundled';
+}) {
   const [roast, setRoast] = useState<RoastLevel | 'all'>('all');
   const [roaster, setRoaster] = useState<string>('all');
   const [sort, setSort] = useState<Sort>('recommended');
+
+  const roasterList = useMemo(
+    () => Array.from(new Set(products.map(p => p.roaster))).sort((a, b) => a.localeCompare(b, 'fa')),
+    [products],
+  );
 
   const list = useMemo(() => {
     const filtered = products.filter(
@@ -39,11 +50,10 @@ export default function Catalogue() {
         );
         break;
       default:
-        // keep curated order: greens → espresso staples → single origins
         break;
     }
     return sorted;
-  }, [roast, roaster, sort]);
+  }, [products, roast, roaster, sort]);
 
   return (
     <section className="section" id="products" style={{ scrollMarginTop: '90px' }}>
@@ -85,7 +95,7 @@ export default function Catalogue() {
               onChange={e => setRoaster(e.target.value)}
             >
               <option value="all">همه‌ی رسترها</option>
-              {roasters.map(r => (
+              {roasterList.map(r => (
                 <option key={r} value={r}>
                   {r}
                 </option>
@@ -109,6 +119,7 @@ export default function Catalogue() {
 
         <p className="muted" style={{ fontSize: '0.8rem', marginBottom: '1.5rem' }}>
           {toFa(list.length)} محصول نمایش داده می‌شود
+          {source === 'wordpress' ? ' — قیمت‌ها زنده از ووکامرس' : ' — نسخه‌ی نمایشی'}
         </p>
 
         <div className="grid">

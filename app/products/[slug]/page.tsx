@@ -5,10 +5,15 @@ import SiteHeader from '@/components/site-header';
 import SiteFooter from '@/components/site-footer';
 import ProductBuyPanel from '@/components/product-buy-panel';
 import ProductCard from '@/components/product-card';
-import { products } from '@/data/products';
+import { getAllSlugs, getCatalogue, getProductBySlug } from '@/lib/catalog';
+import { isHeadlessEnabled } from '@/lib/wp';
 
-export function generateStaticParams() {
-  return products.map(p => ({ slug: p.slug }));
+export const revalidate = 300;
+
+/** Prerender every product; slugs come from whichever source is live. */
+export async function generateStaticParams() {
+  const slugs = await getAllSlugs();
+  return slugs.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -17,7 +22,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = products.find(p => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) return { title: 'محصول پیدا نشد' };
 
   return {
@@ -33,9 +38,10 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = products.find(p => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
 
+  const { products } = await getCatalogue();
   const related = products
     .filter(p => p.id !== product.id && (p.origin === product.origin || p.roast === product.roast))
     .slice(0, 3);
@@ -70,7 +76,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="pdp-media">
               <img src={product.image} alt={`${product.title} از ${product.roaster}`} />
             </div>
-            <ProductBuyPanel product={product} />
+            <ProductBuyPanel product={product} headless={isHeadlessEnabled()} />
           </div>
         </div>
 
