@@ -17,9 +17,9 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const results = [];
 let failed = 0;
 
-function eval_case(id, description, fn) {
+async function eval_case(id, description, fn) {
   try {
-    const detail = fn();
+    const detail = await fn();
     results.push({ id, description, ok: true, detail: detail || '' });
   } catch (error) {
     failed += 1;
@@ -53,7 +53,7 @@ const FA_DIGITS = /[۰-۹]/;
 const LATIN_DIGITS = /[0-9]/;
 
 // ---------- 1. money integrity ----------
-eval_case('money/integer-toman', 'Prices are positive integers in Toman, never floats or strings', () => {
+await eval_case('money/integer-toman', 'Prices are positive integers in Toman, never floats or strings', () => {
   for (const p of products) {
     for (const v of p.variants) {
       assert(Number.isInteger(v.price), `${p.slug} has non-integer price ${v.price}`);
@@ -64,7 +64,7 @@ eval_case('money/integer-toman', 'Prices are positive integers in Toman, never f
   return `${products.reduce((n, p) => n + p.variants.length, 0)} variants checked`;
 });
 
-eval_case('money/kg-derives-from-weight', 'Per-kilo price is a pure function of price and grams', () => {
+await eval_case('money/kg-derives-from-weight', 'Per-kilo price is a pure function of price and grams', () => {
   for (const p of products) {
     for (const v of p.variants) {
       if (v.kgPrice === undefined) continue;
@@ -79,7 +79,7 @@ eval_case('money/kg-derives-from-weight', 'Per-kilo price is a pure function of 
   return 'kg price consistent with weight';
 });
 
-eval_case('catalogue/no-duplicate-slugs', 'Slugs are unique so SSG cannot silently overwrite a page', () => {
+await eval_case('catalogue/no-duplicate-slugs', 'Slugs are unique so SSG cannot silently overwrite a page', () => {
   const seen = new Set();
   for (const p of products) {
     assert(!seen.has(p.slug), `duplicate slug ${p.slug}`);
@@ -88,7 +88,7 @@ eval_case('catalogue/no-duplicate-slugs', 'Slugs are unique so SSG cannot silent
   return `${seen.size} unique slugs`;
 });
 
-eval_case('catalogue/beans-only', 'The catalogue contains no gear, no robusta, no subscriptions', () => {
+await eval_case('catalogue/beans-only', 'The catalogue contains no gear, no robusta, no subscriptions', () => {
   // Ground coffee (پیش‌آسیاب) is still coffee and appears on the source list;
   // hardware and non-bean merchandise must never enter the catalogue.
   const forbidden = [/روبوستا/, /اسپرسوساز/, /قوری/, /موکاپات/, /فرنچ‌پرس/, /subscription/i, /\bgear\b/i, /gift card/i];
@@ -102,13 +102,13 @@ eval_case('catalogue/beans-only', 'The catalogue contains no gear, no robusta, n
 });
 
 // ---------- 2. Persian-first presentation ----------
-eval_case('presentation/rtl-html', 'The root layout declares lang="fa" and dir="rtl"', () => {
+await eval_case('presentation/rtl-html', 'The root layout declares lang="fa" and dir="rtl"', () => {
   const layout = read('app/layout.tsx');
   assert(/lang="fa"/.test(layout), 'missing lang="fa"');
   assert(/dir="rtl"/.test(layout), 'missing dir="rtl"');
 });
 
-eval_case('presentation/persian-digits-in-copy', 'UI formatting converts numbers to Persian digits', () => {
+await eval_case('presentation/persian-digits-in-copy', 'UI formatting converts numbers to Persian digits', () => {
   const sources = [...sourceFiles(join(root, 'components')), ...sourceFiles(join(root, 'lib'))]
     .map(f => readFileSync(f, 'utf8'));
   const usesFormatter = sources.some(s => /toLocaleString\(\s*['"]fa/.test(s) || /fa-IR/.test(s));
@@ -116,7 +116,7 @@ eval_case('presentation/persian-digits-in-copy', 'UI formatting converts numbers
   return 'fa-IR formatting present';
 });
 
-eval_case('presentation/no-latin-price-in-ui', 'Persian prices never leak Latin digits into rendered markup', () => {
+await eval_case('presentation/no-latin-price-in-ui', 'Persian prices never leak Latin digits into rendered markup', () => {
   // The formatter must be the only path to money strings.
   const offenders = [];
   for (const file of [...sourceFiles(join(root, 'components')), ...sourceFiles(join(root, 'lib'))]) {
@@ -130,7 +130,7 @@ eval_case('presentation/no-latin-price-in-ui', 'Persian prices never leak Latin 
   assert(offenders.length === 0, offenders.join(' | '));
 });
 
-eval_case('presentation/no-em-dash-in-copy', 'Editorial rule: no em dashes in user-facing strings', () => {
+await eval_case('presentation/no-em-dash-in-copy', 'Editorial rule: no em dashes in user-facing strings', () => {
   const files = ['components', 'app', 'lib', 'data'].flatMap(dir => sourceFiles(join(root, dir)));
   const offenders = files.filter(file => {
     // Comments may use an em dash; only copy the visitor can read is checked.
@@ -144,7 +144,7 @@ eval_case('presentation/no-em-dash-in-copy', 'Editorial rule: no em dashes in us
 });
 
 // ---------- 3. domain portability ----------
-eval_case('portability/no-absolute-urls', 'No hardcoded absolute origin: the site moves to a .ir domain', () => {
+await eval_case('portability/no-absolute-urls', 'No hardcoded absolute origin: the site moves to a .ir domain', () => {
   const offenders = [];
   for (const file of sourceFiles(root)) {
     if (file.includes('.claude') || file.includes('/evals/') || file.includes('/scripts/')) continue;
@@ -160,7 +160,7 @@ eval_case('portability/no-absolute-urls', 'No hardcoded absolute origin: the sit
   assert(offenders.length === 0, offenders.slice(0, 5).join(' | '));
 });
 
-eval_case('portability/sitemap-uses-env-base', 'sitemap/robots derive the origin from configuration', () => {
+await eval_case('portability/sitemap-uses-env-base', 'sitemap/robots derive the origin from configuration', () => {
   const sitemap = read('app/sitemap.ts');
   assert(/NEXT_PUBLIC_SITE_URL|baseUrl|SITE_URL|siteUrl\(/.test(sitemap), 'sitemap has no configurable origin');
   const site = read('lib/site.ts');
@@ -168,38 +168,62 @@ eval_case('portability/sitemap-uses-env-base', 'sitemap/robots derive the origin
 });
 
 // ---------- 4. backend outage behaviour (product feature) ----------
-eval_case('resilience/bridge-never-caches-failure', 'lib/wp.ts uses cache: no-store so a dead backend is not frozen in', () => {
+await eval_case('resilience/bridge-never-caches-failure', 'lib/wp.ts uses cache: no-store so a dead backend is not frozen in', () => {
   const src = read('lib/wp.ts');
   assert(/cache:\s*'no-store'/.test(src), 'missing cache: no-store');
   assert(!/next:\s*\{\s*revalidate/.test(src), 'fetch-level revalidate reintroduces the cached-failure bug');
 });
 
-eval_case('resilience/fallback-catalogue-exists', 'A bundled catalogue is available when WP is not configured', () => {
+await eval_case('resilience/fallback-catalogue-exists', 'A bundled catalogue is available when WP is not configured', () => {
   const catalog = read('lib/catalog.ts');
   assert(/data\/products/.test(catalog), 'catalog has no bundled fallback');
   assert(products.length >= 50, `only ${products.length} fallback products`);
 });
 
-eval_case('resilience/checkout-rejects-without-gateway', 'Checkout returns 503, not a fake URL, when the gateway is unavailable', () => {
+await eval_case('resilience/checkout-rejects-without-gateway', 'Checkout returns 503, not a fake URL, when the gateway is unavailable', () => {
   const route = read('app/api/checkout/route.ts');
   assert(/503/.test(route), 'no 503 path in checkout route');
   assert(!/https?:\/\/[a-z0-9.-]*zarinpal/i.test(route), 'checkout hardcodes a gateway URL');
 });
 
-eval_case('resilience/checkout-validates-quantity', 'Checkout clamps quantity and requires a real variation id', () => {
+await eval_case('resilience/checkout-validates-quantity', 'Checkout clamps quantity and requires a real variation id', () => {
   const route = read('app/api/checkout/route.ts');
   assert(/variation_id/.test(route), 'variation_id not validated');
   assert(/20/.test(route), 'no upper quantity bound');
 });
 
-// ---------- 5. build hygiene ----------
-eval_case('hygiene/no-secrets-committed', 'No env file with credentials is checked in', () => {
+// ---------- 5. open redirect + free-priced products ----------
+await eval_case('security/checkout-url-same-origin', 'A backend-supplied checkout URL is only trusted on the backend origin', async () => {
+  const { assertSameOrigin } = await import('../lib/wp.ts');
+  const base = 'https://shop.vikak.ir';
+  assert(assertSameOrigin('https://shop.vikak.ir/checkout/', base) !== null, 'same-origin URL rejected');
+  assert(assertSameOrigin('https://evil.example/checkout', base) === null, 'foreign origin accepted');
+  assert(assertSameOrigin('javascript:alert(1)', base) === null, 'javascript: URL accepted');
+  assert(assertSameOrigin('//evil.example/x', base) === null, 'protocol-relative URL accepted');
+  assert(assertSameOrigin('https://shop.vikak.ir.evil.example/', base) === null, 'suffix-spoofed host accepted');
+  return 'open redirect blocked';
+});
+
+await eval_case('money/no-zero-priced-product', 'A product with no priced variant never reaches the catalogue', async () => {
+  const { hasPricedVariant } = await import('../lib/wp.ts');
+  const { products } = await import('../data/products.ts');
+  assert(hasPricedVariant({ variants: [{ price: 1000 }] }), 'priced product rejected');
+  assert(!hasPricedVariant({ variants: [{ price: 0 }] }), 'zero-priced product accepted');
+  assert(!hasPricedVariant({ variants: [] }), 'variant-less product accepted');
+  for (const p of products) {
+    assert(hasPricedVariant(p), `${p.slug} has no priced variant in the bundled catalogue`);
+  }
+  return 'no free coffee';
+});
+
+// ---------- 6. build hygiene ----------
+await eval_case('hygiene/no-secrets-committed', 'No env file with credentials is checked in', () => {
   assert(!existsSync(join(root, '.env')), '.env is present in the repo root');
   const example = read('.env.example');
   assert(!/ZARINPAL_MERCHANT|SECRET_KEY|PASSWORD=/i.test(example), '.env.example leaks a secret');
 });
 
-eval_case('hygiene/env-ignored', '.gitignore excludes .env-style files', () => {
+await eval_case('hygiene/env-ignored', '.gitignore excludes .env-style files', () => {
   assert(read('.gitignore').includes('.env'), '.gitignore does not ignore .env');
 });
 

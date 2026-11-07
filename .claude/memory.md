@@ -26,6 +26,20 @@ themselves do not.
 **Why it was missed.** The first ECC invocation was `plan`, which only prints a mapping
 and installs nothing. `install` was required for real.
 
+## 2026-11-08 · install-state: portable on purpose
+
+`ecc doctor` records and compares **absolute** paths, so a state committed from one
+machine always warns on another. The committed state is therefore normalized to
+project-relative paths (`scripts/normalize-ecc-state.mjs`), which is what makes the
+repo usable everywhere.
+
+Consequence, by design:
+
+- In **CI**: check portability -> re-run the pinned `install` (records this runner's
+  paths) -> `doctor` is then **OK**. This is also the reproducibility test.
+- **Locally**: `doctor` warns about a root mismatch until you run the same `install`.
+  That warning is expected. `node scripts/normalize-ecc-state.mjs` before committing.
+
 ## 2026-11-07 · Headless WooCommerce backend (option ب)
 
 WooCommerce owns price, stock, cart, Zarinpal payment, weight-based shipping and

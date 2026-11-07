@@ -116,7 +116,8 @@ node .claude/scripts/skills-health.js
 npx -y ecc-universal@2.2.3 doctor
 npx -y ecc-universal@2.2.3 status
 npx -y ecc-universal@2.2.3 security-ioc-scan
-node evals/run.mjs                           # ۱۶ ایوال دامنه‌ای
+node evals/run.mjs                           # ۱۸ ایوال دامنه‌ای
+node scripts/check-export.mjs                # گیت متن و مبدأ در خروجی استاتیک
 ```
 
 `evals/run.mjs` بدون شبکه اجرا می‌شود و چیزهایی را قفل می‌کند که یک عامل می‌تواند

@@ -108,7 +108,7 @@ function toProduct(raw: CatalogProduct): Product {
     roastFa: raw.roast_fa || 'رست متوسط',
     notes: raw.notes?.length ? raw.notes : ['شکلات', 'کارامل', 'بدنه‌ی متعادل'],
     body: raw.body || 'بدنه متوسط',
-    variants: variants.length ? variants : [{ id: 'default', label: 'بسته', grams: 250, price: 0 }],
+    variants,
     image: raw.image || '/images/product-bag.jpg',
     tag: raw.tag ?? undefined,
   };
@@ -118,14 +118,44 @@ function toProduct(raw: CatalogProduct): Product {
 export async function fetchCatalog(): Promise<Product[] | null> {
   const data = await getJson<{ products?: CatalogProduct[] }>('/wp-json/vikak/v1/catalog?per_page=200');
   if (!data?.products?.length) return null;
-  return data.products.map(toProduct);
+  // A product without a priced variant must never reach the UI: a zero price
+  // would render as "۰ تومان" and could be checked out for free.
+  const mapped = data.products.map(toProduct).filter(hasPricedVariant);
+  return mapped.length ? mapped : null;
+}
+
+/** True when at least one variant carries a positive integer price. */
+export function hasPricedVariant(product: Product): boolean {
+  return product.variants.some(v => Number.isInteger(v.price) && v.price > 0);
 }
 
 export async function fetchProduct(slug: string): Promise<Product | null> {
   const data = await getJson<{ product?: CatalogProduct }>(
     `/wp-json/vikak/v1/catalog/${encodeURIComponent(slug)}`,
   );
-  return data?.product ? toProduct(data.product) : null;
+  if (!data?.product) return null;
+  const product = toProduct(data.product);
+  return hasPricedVariant(product) ? product : null;
+}
+
+/**
+ * Only trust a checkout URL that points at the configured backend origin.
+ *
+ * The URL comes from our own mu-plugin, but it crosses a network boundary and is
+ * then handed to `window.location` in the browser. A compromised or misconfigured
+ * WordPress could return an arbitrary origin and turn the storefront into an open
+ * redirect, so the value is validated here instead of being trusted.
+ */
+export function assertSameOrigin(url: string, base: string): string | null {
+  try {
+    const target = new URL(url);
+    const backend = new URL(base);
+    if (target.protocol !== 'https:' && target.protocol !== 'http:') return null;
+    if (target.origin !== backend.origin) return null;
+    return target.toString();
+  } catch {
+    return null;
+  }
 }
 
 /** Ask WP to build a real WooCommerce cart and hand back the checkout URL. */
@@ -150,7 +180,9 @@ export async function createCheckout(
 
     if (!res.ok) return { error: payload.message || `WP_${res.status}` };
     if (!payload.checkout_url) return { error: 'NO_CHECKOUT_URL' };
-    return { checkoutUrl: payload.checkout_url };
+    const safe = assertSameOrigin(payload.checkout_url, base);
+    if (!safe) return { error: 'UNTRUSTED_CHECKOUT_URL' };
+    return { checkoutUrl: safe };
   } catch (error) {
     return { error: (error as Error).message };
   }

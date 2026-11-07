@@ -24,7 +24,10 @@ export default function CartDrawer() {
         .filter(item => Boolean(item.variation_id));
 
       if (!items.length) {
-        window.location.href = '/api/checkout';
+        // Nothing in the cart maps to a WooCommerce variation, so there is no
+        // real order to create. Sending the visitor to /api/checkout would hit a
+        // POST-only route with a GET request; say what is wrong instead.
+        setError('این اقلام به ووکامرس وصل نیستند. صفحه را تازه کنید و دوباره تلاش کنید.');
         return;
       }
 
